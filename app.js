@@ -76,5 +76,9 @@ app.get("//api/books", (req, res) => {
   res.send(books);
 })
 
+app.delete("/api/books", (req, res) => {
+  
+})
+
 
 module.exports = app;
