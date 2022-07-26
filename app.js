@@ -34,7 +34,7 @@ function readExistingBooks(){
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 
-app.get("/health", (req, res) => {
+app.get("//health", (req, res) => {
   res.status(200).send("Don't panic, Jesus us here.");
 });
 
@@ -49,7 +49,7 @@ function GenerateNewID() {
   return newID
 }
 
-app.post("/api/books", (req, res) => {
+app.post("//api/books", (req, res) => {
   let newID = GenerateNewID();
   //var newBookObj = new BookObj(req.body);
   console.log(req.body);
@@ -70,7 +70,7 @@ app.post("/api/books", (req, res) => {
   res.status(201).send();
   readExistingBooks()
 })
-app.get("/api/books", (req, res) => {
+app.get("//api/books", (req, res) => {
   //books.push(req.params)
   //console.log(books)
   res.send(books);
