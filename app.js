@@ -2,6 +2,14 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 
+app.use(
+    express.urlencoded({
+      extended: true,
+    })
+);
+
+app.use(express.json());
+
 var BookObj = function (bookObj){
   this.author = bookObj.author;
   this.title = bookObj.title;
@@ -9,7 +17,7 @@ var BookObj = function (bookObj){
 }
 
 
-let books;
+let books = {books: [{}]};
 readExistingBooks();
 
 function readExistingBooks(){
@@ -17,6 +25,7 @@ function readExistingBooks(){
     if(err) throw err;
 
     books = JSON.parse(data)
+    //books = data;
   })
 }
 
@@ -39,24 +48,29 @@ app.get("/health", (req, res) => {
 });
 
 function GenerateNewID() {
-  let length = Object.keys(JSON.parse(books)).length;
-  let newID = books[length - 1].id
-  if(newID === undefined){
+  //let length = Object.keys(JSON.parse(books)).length;
+  let length = books.length
+  let newID;
+  if(books[length - 1] === undefined){
     newID = 1;
   } else {
-    newID++;
+    newID = books[length - 1].id + 1
   }
+
   return newID
 }
 
 app.post("/api/books", (req, res) => {
-  let newID = GenerateNewID();
+  let newID = GenerateNewID()
   //var newBookObj = new BookObj(req.body);
-  console.log(req.body);
+  //console.log(req.body);
   //console.log(newID)
-  let buffer = {"id": newID, "author": req.params.author, "title": req.params.title, "yearPublished": req.params.yearPublished};
-  console.log(buffer);
-  //books.push(req.params);
+  let buffer = {"id": newID, "author": req.body.author, "title": req.body.title, "yearPublished": req.body.yearPublished};
+  //console.log(buffer);
+
+  books.push(buffer);
+  //books.books.push(buffer)
+  console.log(books)
 
   fs.writeFile("output.json", JSON.stringify(books), err => {
     if(err) throw err;
@@ -67,7 +81,7 @@ app.post("/api/books", (req, res) => {
   //fetch()
   //console.log(req.params.title);
   //let obj = req.params;
-  res.status(201).send();
+  res.status(201).send(buffer);
   readExistingBooks()
 })
 app.get("/api/books", (req, res) => {
@@ -77,7 +91,13 @@ app.get("/api/books", (req, res) => {
 })
 
 app.delete("/api/books", (req, res) => {
+  fs.writeFile("output.json", "[]", err => {
+    if(err) throw err;
 
+    console.log("Done deleting all records");
+  })
+  res.status(204).send();
+  readExistingBooks()
 })
 
 
