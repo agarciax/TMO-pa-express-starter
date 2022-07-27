@@ -25,12 +25,12 @@ app.get("/health", (req, res) => {
 });
 
 function GenerateNewID() {
-  let length = books.length
+  let length = books.books.length
   let newID;
-  if(books[length - 1] === undefined){
+  if(books.books[length - 1] === undefined){
     newID = 1;
   } else {
-    newID = books[length - 1].id + 1
+    newID = books.books[length - 1].id + 1
   }
 
   return newID
@@ -39,8 +39,7 @@ function GenerateNewID() {
 app.post("/api/books", (req, res) => {
   let newID = GenerateNewID()
   let buffer = {"id": newID, "author": req.body.author, "title": req.body.title, "yearPublished": req.body.yearPublished};
-  books.push(buffer);
-  console.log(books)
+  books.books.push(buffer);
 
   fs.writeFile("output.json", JSON.stringify(books), err => {
     if(err) throw err;
@@ -56,7 +55,8 @@ app.get("/api/books", (req, res) => {
 })
 
 app.delete("/api/books", (req, res) => {
-  fs.writeFile("output.json", "[]", err => {
+  let buffer = '{"books": []}';
+  fs.writeFile("output.json", buffer, err => {
     if(err) throw err;
 
     console.log("Done deleting all books");
