@@ -51,11 +51,15 @@ app.post("/api/books", (req, res) => {
   readExistingBooks()
 })
 app.get("/api/books", (req, res) => {
-  let copy = books;
-  copy.books.sort(function (a, b) {
-    return a.title.localeCompare(b.name);
+  //let copy = books;
+  books.books.sort(function (a, b) {
+    return a.title.localeCompare(b.title);
   })
-  res.send(copy);
+  res.send(books);
+  books.books.sort(function (a, b) {
+    return b.title.localeCompare(a.title);
+  })
+  readExistingBooks()
 })
 
 app.delete("/api/books", (req, res) => {
